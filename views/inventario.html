@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Barbería</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>Servicios Agendados</title>
+    <script src="../components/header/header.js"></script>
+    <script src="../components/footer/footer.js"></script>
+    <link rel="stylesheet" href="../assets/styles/inventario/style.css">
+
+</head>
+
+<body>
+    <!-- Este div representa el header funciona a la par con su correspondiente archivo .js -->
+    <div class="col-12" id="header"></div>
+
+    <div class="container">
+        <h1>Inventario de la Barbería</h1>
+
+        <div class="inventory-list" id="inventory-list">
+            <!-- Los productos se cargarán aquí -->
+        </div>
+
+        <div class="add-product">
+            <h2>Agregar nuevo producto</h2>
+            <input type="text" id="new-product-name" placeholder="Nombre del producto">
+            <input type="number" id="new-product-quantity" placeholder="Cantidad" min="1">
+            <textarea id="new-product-description" placeholder="Descripción del producto" rows="4"
+                cols="30"></textarea><br>
+            <br>
+            <button class="button-add" onclick="addProduct()">Agregar Producto</button>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para el inventario
+        let inventory = [
+            { id: 1, name: "Mascarilla Facial", quantity: 30, description: "Tijeras profesionales para corte de cabello." },
+            { id: 2, name: "Cuchilla", quantity: 15, description: "Maquinilla eléctrica para cortar el cabello." },
+            { id: 3, name: "Shampoo", quantity: 50, description: "Champú especial para cabello masculino." },
+            { id: 4, name: "Tijeras", quantity: 25, description: "Tijeras finas para recortar barba." }
+        ];
+
+        // Función para cargar los productos al iniciar
+        function loadInventory() {
+            const inventoryList = document.getElementById('inventory-list');
+            inventoryList.innerHTML = '';
+
+            inventory.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-quantity">Cantidad: ${product.quantity}</div>
+                    <div class="product-description">${product.description}</div>
+                    <div class="product-actions">
+                        <button onclick="removeProduct(${product.id})">Eliminar</button>
+                    </div>
+                `;
+                inventoryList.appendChild(productCard);
+            });
+        }
+
+        // Función para agregar un nuevo producto
+        function addProduct() {
+            const name = document.getElementById('new-product-name').value;
+            const quantity = document.getElementById('new-product-quantity').value;
+            const description = document.getElementById('new-product-description').value;
+
+            if (!name || !quantity || !description) {
+                alert('Por favor, complete todos los campos.');
+                return;
+            }
+
+            const newProduct = {
+                id: inventory.length + 1,
+                name: name,
+                quantity: parseInt(quantity),
+                description: description
+            };
+
+            inventory.push(newProduct);
+            loadInventory(); // Recargar el inventario
+            clearForm(); // Limpiar los campos
+        }
+
+        // Función para eliminar un producto
+        function removeProduct(productId) {
+            inventory = inventory.filter(product => product.id !== productId);
+            loadInventory(); // Recargar el inventario
+        }
+
+        // Función para limpiar el formulario de agregar producto
+        function clearForm() {
+            document.getElementById('new-product-name').value = '';
+            document.getElementById('new-product-quantity').value = '';
+            document.getElementById('new-product-description').value = '';
+        }
+
+        // Cargar el inventario al iniciar
+        loadInventory();
+    </script>
+    <br>
+    <br>
+    <br>
+    <!-- Este div representa el footer funciona a la par con su correspondiente archivo .js -->
+    <div class="col-12" id="footer"></div>
+
+</body>
+
+</html>
