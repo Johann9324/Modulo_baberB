@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Utilizo estos scripts para reutilizar las vistas de header y footer -->
+    <script src="../components/header/header.js"></script>
+    <script src="../components/footer/footer.js"></script>
+
+    <style>
+        body {
+          background-color: #f8f9fa;
+        }
+        .sidebar {
+          height: 100vh;
+          background-color: #000;
+          color: white;
+        }
+        .sidebar .nav-link {
+          color: white;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link:focus,
+        .sidebar .nav-link.active {
+          background-color: #dc3545;
+        }
+        .circle-user {
+          width: 60px;
+          height: 60px;
+          background-color: #0d6efd;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-weight: bold;
+          margin: 20px auto;
+        }
+        .content {
+          padding: 20px;
+        }
+        .module {
+          display: none;
+        }
+        .module.active {
+          display: block;
+        }
+      </style>
+
+
+
+
+</head>
+<body>
+    <!-- Este div representa el header funciona a la par con su correspondiente archivo .js -->
+    <div class="col-12" id="header"></div>
+
+    <!-- Este main corresponde ya al contenido del modulo como tal, 
+    entonces este cambia segun el modulo o la informacion que se quiera mostrar -->
+    <main class="col-12 bg-light d-flex align-items-center justify-content-center" style="height: 70vh;">
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-2 sidebar d-flex flex-column p-3">
+                <h4></h4>
+                <h4><i class="bi bi-menu-button-wide"></i> Menu</h4>
+                <ul class="nav flex-column">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="link-actividades" href="#" onclick="mostrarModulo('actividades', this)">
+                      <i class="bi bi-person-check me-2"></i>Módulo de Actividades
+                    </a>
+                    
+                  
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="link-servicios" href="#" onclick="mostrarModulo('servicios', this)"><i class="bi bi-r-circle me-2"></i>Registro de Servicios</a>
+                  </li>      
+                </ul>
+                <div class="mt-auto mb-3">
+                  <div class="circle-user">U</div>
+                  <p class="text-center">Usuario</p>
+                </div>
+              </div>
+              <div class="col-10 content">
+                <div id="actividades" class="module active">
+                  <h2>Servicios Registrados por el Usuario</h2>
+                  <div class="table-responsive mt-4">
+                    <table class="table table-bordered table-hover">
+                      <thead class="table-dark">
+                      
+                        <tr>
+                          <th>#</th>
+                          <th>Nombre del Servicio</th>
+                          <th>Categoría</th>
+                          <th>Descripción</th>
+                          <th>Fecha de Inicio</th>
+                          <th>Barbero</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td>Corte de Cabello</td>
+                          <td>Corte</td>
+                          <td>Tipo de corte french crop bajo texturizado</td>
+                          <td>2025-04-01</td>
+                          <td>Juan Pérez</td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>Corte de Barba</td>
+                          <td>Barba</td>
+                          <td>Barba tipo candado</td>
+                          <td>2025-04-03</td>
+                          <td>Miguel Rodríguez</td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td>Tinte de Cabello</td>
+                          <td>Tinte</td>
+                          <td>Color azul plateado con rayitos</td>
+                          <td>2025-04-05</td>
+                          <td>Carlos Méndez</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+        
+                <div id="servicios" class="module">
+                  <h2><i class="bi bi-r-circle me-2"></i>Registro de Servicios</h2>
+                  <form class="row g-3">
+                    <div class="col-md-6">
+                      <label for="nombreServicio" class="form-label">Nombre del Servicio</label>
+                      <input type="text" class="form-control" id="nombreServicio" placeholder="Ej: Mantenimiento de equipos">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="categoriaServicio" class="form-label">Categoría</label>
+                      <select id="categoriaServicio" class="form-select">
+                        <option selected>Elegir...</option>
+                        <option>Corte</option>
+                        <option>Barba</option>
+                        <option>Cejas</option>
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <label for="descripcionServicio" class="form-label">Descripción</label>
+                      <textarea class="form-control" id="descripcionServicio" rows="3" placeholder="Detalles del servicio..."></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
+                      <input type="date" class="form-control" id="fechaInicio">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="responsable" class="form-label">Responsable</label>
+                      <input type="text" class="form-control" id="responsable" placeholder="Nombre del responsable">
+                    </div>
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-primary">Registrar Servicio</button>
+                    </div>
+                  </form>
+                </div>
+        
+                <div id="ver-servicios" class="module">
+                  <h2>Mostrar Servicios</h2>
+                  <p>Lista de servicios disponibles.</p>
+                </div>
+        
+                <div id="tipo-user" class="module">
+                  <h2>Validar Tipo de Usuario</h2>
+                  <p>Lógica para identificar si el usuario es tipo 2 o no.</p>
+                </div>
+        
+                <div id="seleccionar" class="module">
+                  <h2>Seleccionar Servicio</h2>
+                  <p>Interfaz para elegir un servicio específico.</p>
+                </div>
+        
+                <div id="info-detallada" class="module">
+                  <h2>Info Detallada del Servicio</h2>
+                  <p>Información completa del servicio seleccionado.</p>
+                </div>
+        
+                <div id="estadisticas" class="module">
+                  <h2>Ver Estadísticas</h2>
+                  <p>Opción para que el usuario decida si quiere ver estadísticas.</p>
+                </div>
+        
+                <div id="calculos" class="module">
+                  <h2>Realizar Cálculos</h2>
+                  <p>Procesamiento de datos para generar estadísticas.</p>
+                </div>
+        
+                <div id="mostrar-estadisticas" class="module">
+                  <h2>Mostrar Estadísticas</h2>
+                  <p>Visualización de estadísticas generadas.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script>
+            function mostrarModulo(id, link = null) {
+              const modulos = document.querySelectorAll('.module');
+              modulos.forEach(m => m.classList.remove('active'));
+              document.getElementById(id).classList.add('active');
+        
+              const navLinks = document.querySelectorAll('.sidebar .nav-link');
+              navLinks.forEach(l => l.classList.remove('active'));
+              if (link) {
+                link.classList.add('active');
+              }
+            }
+          </script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </main>
+
+
+
+    <!-- Este div representa el footer funciona a la par con su correspondiente archivo .js -->
+    <div class="col-12" id="footer"></div>
+</body>
+</html>
