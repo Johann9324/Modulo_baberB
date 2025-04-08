@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Utilizo estos scripts para reutilizar las vistas de header y footer -->
+    <script src="../components/header/header.js"></script>
+    <style>
+        /* html, body {
+          height: 100%;
+          margin: 0;
+          font-family: Arial, sans-serif;
+        } */
+    
+        #map {
+          height: 50%;
+          width: 50%;
+          position: fixed;
+          top: auto;
+          left: auto;
+          z-index: 0;
+        }
+    
+        .card-overlay {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          z-index: 999;
+          display: flex;
+          justify-content: center;
+          pointer-events: none;
+        }
+    
+        .card-overlay .card {
+          background-color: rgba(214, 203, 203, 0.95);
+          width: 90%;
+          max-width: 400px;
+          border-radius: 20px;
+          pointer-events: auto;
+        }
+    
+        .search-input {
+          display: none;
+          margin-top: 10px;
+        }
+    
+        .nav-icons {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          margin-top: 20px;
+        }
+    
+        .nav-icons div {
+          text-align: center;
+          font-size: 14px;
+        }
+    
+        .nav-icons i {
+          font-size: 24px;
+          display: block;
+          margin-bottom: 5px;
+        }
+    
+        .location-option {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          margin-bottom: 6px;
+        }
+    
+        .location-option i {
+          color: #d9534f;
+          margin-right: 8px;
+        }
+    
+        #barberiaInfo {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          display: none;
+          justify-content: center;
+          z-index: 1000;
+        }
+    
+        #barberiaInfo .card {
+          background-color: white;
+          width: 90%;
+          max-width: 400px;
+          border-radius: 20px;
+        }
+    
+        .servicio.selected {
+          background-color: #d9534f;
+          color: white;
+          font-weight: bold;
+        }
+      </style>
+</head>
+<body>
+    <!-- Este div representa el header funciona a la par con su correspondiente archivo .js -->
+    <div class="col-12" id="header"></div>
+
+    <!-- Este main corresponde ya al contenido del modulo como tal, 
+    entonces este cambia segun el modulo o la informacion que se quiera mostrar -->
+    <main class="col-12 bg-light d-flex align-items-center justify-content-center" style="height: 70vh;">
+        
+        <div id="map"></div>
+
+        <!-- Tarjeta principal -->
+        <div class="card-overlay">
+          <div class="card p-3 shadow-lg rounded-4">
+            <h5 class="mb-3">
+              <i class="bi bi-search" style="cursor:pointer" onclick="toggleSearch()"></i>
+              <strong>Where book?</strong>
+            </h5>
+        
+            <div class="search-input" id="searchBox">
+              <input type="text" id="searchInput" class="form-control mb-2" placeholder="Ej: Castilla, Bogotá">
+              <button class="btn btn-primary w-100" onclick="buscarUbicacion()">Buscar</button>
+            </div>
+        
+            <div id="locationList">
+              <div class="location-option" onclick="centrarUbicacion('Castilla')">
+                <i class="bi bi-geo-alt-fill"></i> Castilla
+              </div>
+              <div class="location-option" onclick="centrarUbicacion('Chico Norte')">
+                <i class="bi bi-geo-alt-fill"></i> Chico Norte
+              </div>
+              <div class="location-option" onclick="centrarUbicacion('Lord´s Alejandro')">
+                <i class="bi bi-geo-alt-fill"></i> Lord´s Alejandro
+              </div>
+            </div>
+        
+            <div class="nav-icons mt-3">
+              <div>
+                <i class="bi bi-scissors"></i>
+                <div>Booking</div>
+              </div>
+              <div>
+                <i class="bi bi-calendar2-check"></i>
+                <div>Dates</div>
+              </div>
+              <div>
+                <i class="bi bi-file-earmark-text"></i>
+                <div>Reports</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tarjeta de barbería -->
+        <div id="barberiaInfo">
+          <div class="card p-3 shadow-lg rounded-4">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 id="tituloBarberia" class="mb-0">Barbería</h5>
+              <button class="btn btn-sm btn-outline-secondary" onclick="cerrarBarberiaInfo()">
+                <i class="bi bi-arrow-left"></i> Volver
+              </button>
+            </div>
+            <hr>
+            <div id="barberiaDetalles"></div>
+        
+            <!-- Botones de días y mes -->
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <button class="btn btn-danger rounded-pill">1</button>
+              <button class="btn btn-danger rounded-pill">2</button>
+              <button class="btn btn-danger rounded-pill">3</button>
+              <button class="btn btn-danger rounded-pill">4</button>
+              <button class="btn btn-danger rounded-pill">5</button>
+              <button class="btn btn-danger rounded-pill">Abril</button>
+            </div>
+        
+            <!-- Botones de servicios -->
+            <div class="d-flex flex-wrap gap-2 mb-3" id="servicios">
+              <button class="btn btn-light border rounded-pill servicio">Corte</button>
+              <button class="btn btn-light border rounded-pill servicio">Tintura</button>
+              <button class="btn btn-light border rounded-pill servicio">Barba</button>
+              <button class="btn btn-light border rounded-pill servicio">Mascarilla</button>
+              <button class="btn btn-light border rounded-pill servicio">Cejas</button>
+              <button class="btn btn-light border rounded-pill servicio">Figuras</button>
+            </div>
+        
+            <!-- Botón de check -->
+            <div class="text-end">
+              <button id="btnCheck" class="btn btn-danger rounded-3" style="height: 60px; width: 60px;" disabled>
+                <i class="bi bi-check-lg text-white fs-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([4.60971, -74.08175], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(map);
+
+  let marcadorBusqueda;
+  let ubicacionesGuardadas = [];
+
+  const barberias = [
+    { nombre: 'Barbería Castilla', lat: 4.6325, lon: -74.1149 },
+    { nombre: 'Barbería Chico Norte', lat: 4.6770, lon: -74.0488 },
+    { nombre: 'Barbería Lord´s Alejandro', lat: 4.6297, lon: -74.0623 }
+  ];
+
+  const dataBarberias = {
+    'Barbería Castilla': {
+      nombre: 'Barbería Castilla',
+      imagen: 'https://via.placeholder.com/350x200.png?text=Castilla',
+      rating: 4
+    },
+    'Barbería Chico Norte': {
+      nombre: 'Barbería Chico Norte',
+      imagen: 'https://via.placeholder.com/350x200.png?text=Chico+Norte',
+      rating: 5
+    },
+    'Barbería Lord´s Alejandro': {
+      nombre: 'Barbería Lord´s Alejandro',
+      imagen: 'https://via.placeholder.com/350x200.png?text=Lord%27s+Alejandro',
+      rating: 3
+    }
+  };
+
+  barberias.forEach(barberia => {
+    L.marker([barberia.lat, barberia.lon])
+      .addTo(map)
+      .bindPopup(`
+        <strong>${barberia.nombre}</strong><br>
+        <button onclick="seleccionarBarberia('${barberia.nombre}', ${barberia.lat}, ${barberia.lon})" class="btn btn-sm btn-primary mt-1">Seleccionar</button>
+      `);
+
+    L.circle([barberia.lat, barberia.lon], {
+      color: 'blue',
+      fillColor: '#cce5ff',
+      fillOpacity: 0.3,
+      radius: 150
+    }).addTo(map);
+  });
+
+  function seleccionarBarberia(nombre, lat, lon) {
+    map.setView([lat, lon], 17);
+    mostrarInfoBarberia(nombre);
+  }
+
+  function mostrarInfoBarberia(nombre) {
+    const info = dataBarberias[nombre];
+    if (!info) return;
+
+    const contenedor = document.getElementById('barberiaInfo');
+    const titulo = document.getElementById('tituloBarberia');
+    const detalles = document.getElementById('barberiaDetalles');
+
+    titulo.textContent = "Barbería";
+
+    let estrellasHTML = "";
+    for (let i = 0; i < 5; i++) {
+      estrellasHTML += `<i class="bi ${i < info.rating ? 'bi-star-fill text-danger' : 'bi-star'} me-1"></i>`;
+    }
+
+    detalles.innerHTML = `
+      <div class="mb-3">
+        <img src="${info.imagen}" class="img-fluid rounded-3 mb-2" alt="Barbería">
+        <h6>${info.nombre}</h6>
+        <div>${estrellasHTML}</div>
+      </div>
+    `;
+
+    document.querySelector('.card-overlay').style.display = 'none';
+    contenedor.style.display = 'flex';
+  }
+
+  function cerrarBarberiaInfo() {
+    document.getElementById('barberiaInfo').style.display = 'none';
+    document.querySelector('.card-overlay').style.display = 'flex';
+  }
+
+  function toggleSearch() {
+    const searchBox = document.getElementById('searchBox');
+    searchBox.style.display = (searchBox.style.display === 'none' || searchBox.style.display === '') ? 'block' : 'none';
+  }
+
+  function buscarUbicacion() {
+    const textoBusqueda = document.getElementById('searchInput').value.trim();
+    if (textoBusqueda === "") {
+      alert("Por favor escribe una localidad.");
+      return;
+    }
+
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(textoBusqueda + ', Bogotá, Colombia')}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          map.setView([lat, lon], 16);
+
+          if (marcadorBusqueda) map.removeLayer(marcadorBusqueda);
+
+          marcadorBusqueda = L.marker([lat, lon]).addTo(map)
+            .bindPopup(textoBusqueda)
+            .openPopup();
+
+          guardarUbicacion(textoBusqueda, lat, lon);
+        } else {
+          alert("No se encontró la ubicación.");
+        }
+      })
+      .catch(err => {
+        console.error("Error en la búsqueda:", err);
+        alert("Hubo un problema al buscar la ubicación.");
+      });
+  }
+
+  function guardarUbicacion(nombre, lat, lon) {
+    if (ubicacionesGuardadas.length >= 3) {
+      ubicacionesGuardadas.shift();
+    }
+    ubicacionesGuardadas.push({ nombre, lat, lon });
+    actualizarLista();
+  }
+
+  function actualizarLista() {
+    const lista = document.getElementById('locationList');
+    lista.innerHTML = '';
+
+    ubicacionesGuardadas.forEach(ubicacion => {
+      const div = document.createElement('div');
+      div.className = 'location-option';
+      div.innerHTML = `<i class="bi bi-geo-alt-fill"></i> ${ubicacion.nombre}`;
+      div.onclick = () => {
+        map.setView([ubicacion.lat, ubicacion.lon], 16);
+        if (marcadorBusqueda) {
+          marcadorBusqueda.setLatLng([ubicacion.lat, ubicacion.lon])
+            .bindPopup(ubicacion.nombre)
+            .openPopup();
+        }
+      };
+      lista.appendChild(div);
+    });
+  }
+
+  function centrarUbicacion(nombre) {
+    document.getElementById('searchInput').value = nombre;
+    buscarUbicacion();
+  }
+
+  // Manejo de selección de servicios
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('servicio')) {
+      e.target.classList.toggle('selected');
+
+      const algunoSeleccionado = document.querySelectorAll('.servicio.selected').length > 0;
+      document.getElementById('btnCheck').disabled = !algunoSeleccionado;
+    }
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </main>
+
+    <!-- Este div representa el footer funciona a la par con su correspondiente archivo .js -->
+    
+</body>
+</html>
