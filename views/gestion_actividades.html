@@ -8,15 +8,18 @@
     <!-- Utilizo estos scripts para reutilizar las vistas de header y footer -->
     <script src="../components/header/header.js"></script>
     <script src="../components/footer/footer.js"></script>
+    <link rel="stylesheet" href="../assets/styles/layout.css">
+
+
 
     <style>
         body {
-          background-color: #f8f9fa;
+          background-color: #fafafa;
         }
         .sidebar {
-          height: 100vh;
-          background-color: #000;
-          color: white;
+          
+          background-color: #000000;
+          color: rgb(255, 255, 255);
         }
         .sidebar .nav-link {
           color: white;
@@ -24,12 +27,12 @@
         .sidebar .nav-link:hover,
         .sidebar .nav-link:focus,
         .sidebar .nav-link.active {
-          background-color: #dc3545;
+          background-color: #3d77f3;
         }
         .circle-user {
-          width: 60px;
-          height: 60px;
-          background-color: #0d6efd;
+          width: 50px;
+          height: 50px;
+          background-color: #fd0d0d;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -38,9 +41,7 @@
           font-weight: bold;
           margin: 20px auto;
         }
-        .content {
-          padding: 20px;
-        }
+        
         .module {
           display: none;
         }
@@ -53,13 +54,14 @@
 
 
 </head>
+
 <body>
-    <!-- Este div representa el header funciona a la par con su correspondiente archivo .js -->
+  <div class="layout">
     <div class="col-12" id="header"></div>
 
     <!-- Este main corresponde ya al contenido del modulo como tal, 
     entonces este cambia segun el modulo o la informacion que se quiera mostrar -->
-    <main class="col-12 bg-light d-flex align-items-center justify-content-center" style="height: 70vh;">
+    <main class="col-12 bg-black text-white content">    
     
     
     
@@ -76,8 +78,7 @@
     
     
     
-    
-        <div class="container-fluid">
+      <h2 class="text-center">Gestión de Actividades</h2><div class="container-fluid">
             <div class="row">
               <div class="col-2 sidebar d-flex flex-column p-3">
                 <h4></h4>
@@ -85,13 +86,21 @@
                 <ul class="nav flex-column">
                   <li class="nav-item">
                     <a class="nav-link active" id="link-actividades" href="#" onclick="mostrarModulo('actividades', this)">
-                      <i class="bi bi-person-check me-2"></i>Módulo de Actividades
+                      <i class="bi bi-person-check me-2"></i> Visualizar Servicios
                     </a>
                     
+
+
+
+
+
+
+
+
                   
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" id="link-servicios" href="#" onclick="mostrarModulo('servicios', this)"><i class="bi bi-r-circle me-2"></i>Registro de Servicios</a>
+                    <a class="nav-link" id="link-servicios" href="#" onclick="mostrarModulo('servicios', this)"><i class="bi bi-r-circle me-2"></i>Registro Servicios</a>
                   </li>      
                 </ul>
                 <div class="mt-auto mb-3">
@@ -105,6 +114,7 @@
                   <div class="table-responsive mt-4">
                     <table class="table table-bordered table-hover">
                       <thead class="table-dark">
+
                       
                         <tr>
                           <th>#</th>
@@ -122,7 +132,7 @@
                           <td>Corte</td>
                           <td>Tipo de corte french crop bajo texturizado</td>
                           <td>2025-04-01</td>
-                          <td>Juan Pérez</td>
+                          <td>Gabriel Delga</td>
                         </tr>
                         <tr>
                           <td>2</td>
@@ -130,7 +140,7 @@
                           <td>Barba</td>
                           <td>Barba tipo candado</td>
                           <td>2025-04-03</td>
-                          <td>Miguel Rodríguez</td>
+                          <td>Miguel Bolivar</td>
                         </tr>
                         <tr>
                           <td>3</td>
@@ -138,7 +148,7 @@
                           <td>Tinte</td>
                           <td>Color azul plateado con rayitos</td>
                           <td>2025-04-05</td>
-                          <td>Carlos Méndez</td>
+                          <td>Danilo Santos</td>
                         </tr>
                       </tbody>
                     </table>
@@ -150,7 +160,7 @@
                   <form class="row g-3">
                     <div class="col-md-6">
                       <label for="nombreServicio" class="form-label">Nombre del Servicio</label>
-                      <input type="text" class="form-control" id="nombreServicio" placeholder="Ej: Mantenimiento de equipos">
+                      <input type="text" class="form-control" id="nombreServicio" placeholder="Ej: Nombre servicio">
                     </div>
                     <div class="col-md-6">
                       <label for="categoriaServicio" class="form-label">Categoría</label>
@@ -161,20 +171,44 @@
                         <option>Cejas</option>
                       </select>
                     </div>
+                    <div class="col-md-6">
+                      <label for="categoriaServicio" class="form-label">Valor del servicio</label>
+                      <select id="categoriaServicio" class="form-select">
+                        <option selected>Elegir una opcion</option>
+                        <option>Corte 20.000</option>
+                        <option>Barba 15.000</option>
+                        <option>Cejas 12.000</option>
+                      </select>
+                    </div>
+                    
+
+                    
+
+
+
                     <div class="col-12">
                       <label for="descripcionServicio" class="form-label">Descripción</label>
                       <textarea class="form-control" id="descripcionServicio" rows="3" placeholder="Detalles del servicio..."></textarea>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-auto">
                       <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
                       <input type="date" class="form-control" id="fechaInicio">
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-auto">
                       <label for="responsable" class="form-label">Responsable</label>
                       <input type="text" class="form-control" id="responsable" placeholder="Nombre del responsable">
                     </div>
-                    <div class="col-12">
-                      <button type="submit" class="btn btn-primary">Registrar Servicio</button>
+                    
+                    <div class="col-md-auto">
+                      <label for="numeroCliente" class="form-label">Número de contacto del cliente</label>
+                      <input type="text" class="form-control" id="numeroCliente" placeholder="Agrega el número del cliente">
+                    </div>
+                    
+
+
+                    <div class="col-13">
+                      
+                      <button id="btnRegistrarServicio" type="submit" class="btn btn-primary">Registrar Servicios</button>
                     </div>
                   </form>
                 </div>
@@ -256,6 +290,9 @@
 
 
     <!-- Este div representa el footer funciona a la par con su correspondiente archivo .js -->
-    <div class="col-12" id="footer"></div>
+    <div class="col-12" id="footer"style="height:auto;"></div>
+  </div>
+  <script src="../assets/js/gestion_actividades/registrar.js"></script>
+
 </body>
 </html>
