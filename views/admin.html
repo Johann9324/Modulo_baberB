@@ -37,6 +37,7 @@
         color: white;
         border: none;
         border-radius: 5px;
+        margin: 0 5px;
     }
 
     button:hover {
@@ -97,18 +98,6 @@
         color: red;
     }
 
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 20px;
-        background-color: #f4f4f4;
-    }
-
-    h1 {
-        text-align: center;
-        color: #333;
-    }
-
     .container-admin {
         max-width: 800px;
         margin: 0 auto;
@@ -117,69 +106,12 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    .floating-menu {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: rgba(0, 0, 0, 0.7);
-        /* Fondo oscuro y ligeramente transparente */
-        color: white;
-        border-radius: 50%;
-        padding: 15px;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .floating-menu:hover {
-        transform: scale(1.1);
-    }
-
-    .menu-options {
-        display: none;
-        position: fixed;
-        bottom: 80px;
-        right: 20px;
-        background-color: rgba(0, 0, 0, 0.9);
-        border-radius: 10px;
-        padding: 20px;
-        width: 250px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        transition: opacity 0.3s ease-in-out;
-        opacity: 0;
-    }
-
-    .menu-options a {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        color: white;
-        text-decoration: none;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-
-    .menu-options a:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .menu-options i {
-        margin-right: 10px;
-    }
-
-    .show-menu {
-        display: block;
-        opacity: 1;
-    }
-
     /* Menú flotante */
     .floating-menu {
         position: fixed;
         bottom: 20px;
         right: 20px;
         background-color: rgba(0, 0, 0, 0.7);
-        /* Fondo oscuro y ligeramente transparente */
         color: white;
         border-radius: 50%;
         padding: 15px;
@@ -231,27 +163,21 @@
     }
 </style>
 
-
 <body>
-    <!-- Este div representa el header funciona a la par con su correspondiente archivo .js -->
+    <!-- Header reutilizable -->
     <div class="col-12" id="header"></div>
 
-    <!-- Este main corresponde ya al contenido del modulo como tal, 
-    entonces este cambia segun el modulo o la informacion que se quiera mostrar -->
     <main class="col-12 bg-light d-flex align-items-center justify-content-center" style="height: 70vh;">
-
-
-
-
         <div class="container-admin">
             <h1>Servicios Agendados</h1>
 
-            <!-- Botones para cambiar vista -->
+            <!-- Botones para cambiar vista y acceso a estadísticas -->
             <div class="button-container">
                 <button onclick="mostrarServicios('hoy')">Ver servicios de hoy</button>
                 <button onclick="mostrarServicios('semana')">Ver servicios de la semana</button>
+                <!-- Botón añadido para estadísticas -->
+                <button onclick="location.href='estadisticas.html'">Estadísticas 📊</button>
             </div>
-
 
             <!-- Vista de los días de la semana -->
             <div id="semana" class="week-days" style="display: none;">
@@ -308,47 +234,38 @@
                     });
                     html += '</table>';
                     document.getElementById('servicios').innerHTML = html;
-                    document.getElementById('semana').style.display = 'none'; // Ocultar vista de semana
+                    document.getElementById('semana').style.display = 'none';
                 } else if (tipo === 'semana') {
-                    // Mostrar los días de la semana
-                    document.getElementById('semana').style.display = 'flex'; // Mostrar vista de semana
-                    document.getElementById('servicios').innerHTML = ''; // Limpiar la vista actual
+                    document.getElementById('semana').style.display = 'flex';
+                    document.getElementById('servicios').innerHTML = '';
                 }
             }
 
             // Función para mostrar el día seleccionado
             function mostrarDia(dia) {
                 let html = `<h2>Servicios del ${dia}</h2><table><tr><th>Hora</th><th>Servicio</th><th>Cliente</th></tr>`;
+                const serviciosDia = serviciosSemana[dia] || [];
 
-                const serviciosDia = serviciosSemana[dia];
-
-                // Mostrar las horas de servicio en rojo si están agendadas
                 for (let i = 9; i <= 18; i++) {
-                    const hora = `${i}:00 AM`;
-                    const servicio = serviciosDia.find(s => s.hora === hora);
+                    const horaLabel = `${i}:00 ${i < 12 ? 'AM' : 'PM'}`;
+                    const servicio = serviciosDia.find(s => s.hora === horaLabel);
                     if (servicio) {
-                        html += `<tr><td class="red">${hora}</td><td>${servicio.servicio}</td><td>${servicio.cliente}</td></tr>`;
+                        html += `<tr><td class="red">${horaLabel}</td><td>${servicio.servicio}</td><td>${servicio.cliente}</td></tr>`;
                     } else {
-                        html += `<tr><td>${hora}</td><td colspan="2">Sin citas</td></tr>`;
+                        html += `<tr><td>${horaLabel}</td><td colspan="2">Sin citas</td></tr>`;
                     }
                 }
                 html += '</table>';
-
-                // Insertamos el HTML generado en la sección correspondiente
                 document.getElementById('servicios').innerHTML = html;
-                document.getElementById('semana').style.display = 'none'; // Ocultar la semana
+                document.getElementById('semana').style.display = 'none';
             }
 
-            // Por defecto, mostramos los servicios de hoy al cargar la página
+            // Mostrar los servicios de hoy al cargar la página
             mostrarServicios('hoy');
         </script>
-
-       
-
-
     </main>
 
-    <!-- Este div representa el footer funciona a la par con su correspondiente archivo .js -->
+    <!-- Footer reutilizable -->
     <div class="col-12" id="footer"></div>
 </body>
 
